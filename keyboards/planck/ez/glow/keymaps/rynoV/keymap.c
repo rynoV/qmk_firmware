@@ -82,28 +82,28 @@ enum planck_layers {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_BASE] = LAYOUT_planck_grid(
-    KC_TAB,         KC_Q,           KC_W,           KC_E,           KC_R,           KC_T,           KC_Y,           KC_U,           KC_I,           KC_O,           KC_P,           KC_BSPACE,
-    MT(MOD_LCTL, KC_ESCAPE),KC_A,           KC_S,           KC_D,           KC_F,           KC_G,           KC_H,           KC_J,           KC_K,           KC_L,           KC_SCOLON,      KC_QUOTE,
+    KC_TAB,         KC_Q,           KC_W,           KC_E,           KC_R,           KC_T,           KC_Y,           KC_U,           KC_I,           KC_O,           KC_P,           KC_BSPC,
+    MT(MOD_LCTL, KC_ESCAPE),KC_A,           KC_S,           KC_D,           KC_F,           KC_G,           KC_H,           KC_J,           KC_K,           KC_L,           KC_SCLN,      KC_QUOTE,
     KC_LSPO,        KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,           KC_N,           KC_M,           KC_COMMA,       KC_DOT,         KC_SLASH,       MT(MOD_RSFT, KC_ENTER),
     KC_MEH,         KC_HYPR,        KC_LGUI,        KC_LALT,        LOWER,          LT(4,KC_SPACE), KC_NO,          RAISE,          TD(DANCE_0),    DYN_MACRO_PLAY1,DYN_REC_START1, DYN_REC_STOP
   ),
 
   [_LOWER] = LAYOUT_planck_grid(
     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_CIRC,        KC_AMPR,        KC_ASTR,        KC_LPRN,        KC_RPRN,        KC_DELETE,
-    KC_TRANSPARENT, KC_PIPE,        KC_UNDS,        KC_PLUS,        KC_LCBR,        KC_RCBR,        KC_HOME,        KC_PGDOWN,      KC_PGUP,        KC_END,         KC_TILD,        KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_PIPE,        KC_UNDS,        KC_PLUS,        KC_LCBR,        KC_RCBR,        KC_HOME,        KC_PGDN,      KC_PGUP,        KC_END,         KC_TILD,        KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, ALT_S_L, RCS(KC_P), KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_NO,          KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
   ),
 
   [_RAISE] = LAYOUT_planck_grid(
     KC_TRANSPARENT, KC_EXLM,        KC_AT,          KC_HASH,        KC_DLR,         KC_PERC,        KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_DELETE,
-    KC_TRANSPARENT, KC_BSLASH,      KC_MINUS,       KC_EQUAL,       KC_LBRACKET,    KC_RBRACKET,    TD(DANCE_1),    KC_DOWN,        KC_UP,          TD(DANCE_2),    KC_GRAVE,       KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_BSLS,      KC_MINUS,       KC_EQUAL,       KC_LBRC,    KC_RBRC,    TD(DANCE_1),    KC_DOWN,        KC_UP,          TD(DANCE_2),    KC_GRAVE,       KC_TRANSPARENT,
     KC_TRANSPARENT, KC_UNDO, KC_CUT, KC_COPY,       KC_PASTE, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_NO,          KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
   ),
 
   [_ADJUST] = LAYOUT_planck_grid(
-    KC_TRANSPARENT, KC_BRIGHTNESS_DOWN,KC_BRIGHTNESS_UP,KC_AUDIO_MUTE,  KC_AUDIO_VOL_DOWN,KC_AUDIO_VOL_UP,KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_PSCREEN, TG(_DVORAK),
+    KC_TRANSPARENT, KC_BRIGHTNESS_DOWN,KC_BRIGHTNESS_UP,KC_AUDIO_MUTE,  KC_AUDIO_VOL_DOWN,KC_AUDIO_VOL_UP,KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_PSCR, TG(_DVORAK),
     KC_TRANSPARENT, KC_TRANSPARENT, AU_ON,          AU_OFF,         KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, RGB_TOG,        RGB_VAD,        RGB_VAI,        KC_TRANSPARENT, QK_BOOT,
     KC_TRANSPARENT, KC_TRANSPARENT, MU_ON,          MU_OFF,         MU_MOD,         KC_TRANSPARENT, KC_TRANSPARENT, RGB_MOD,        RGB_HUI,        RGB_HUD,        KC_TRANSPARENT, WEBUSB_PAIR,
     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_NO,          KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
@@ -126,7 +126,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_DVORAK] = LAYOUT_planck_grid(
     KC_TRANSPARENT, KC_QUOTE, KC_COMMA, KC_DOT, KC_P, KC_Y, KC_F,   KC_G,     KC_C,     KC_R,   KC_L,   KC_TRANSPARENT,
     KC_TRANSPARENT, KC_A, KC_O, KC_E, KC_U, KC_I, KC_D,     KC_H,     KC_T,       KC_N,    KC_S, KC_SLASH,
-    KC_TRANSPARENT, KC_SCOLON, KC_Q, KC_J, KC_K, KC_X, KC_B,  KC_M,  KC_W,    KC_V, KC_Z, KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_SCLN, KC_Q, KC_J, KC_K, KC_X, KC_B,  KC_M,  KC_W,    KC_V, KC_Z, KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_NO, KC_TRANSPARENT, TO(0), KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
   ),
 
@@ -198,7 +198,7 @@ void keyboard_post_init_user(void) {
 #define MUSIC_C {253,125,191} // Colour for keyboard music controls
 #define KEYBRD_C {10,117,208} // Colour for keyboard specific controls, eg oryx key
 
-const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
+const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
     [0] = {
       MAIN_BORDER_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_BORDER_C,
       MAIN_BORDER_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C,
@@ -250,7 +250,7 @@ const uint8_t PROGMEM ledmap[][DRIVER_LED_TOTAL][3] = {
 };
 
 void set_layer_color(int layer) {
-  for (int i = 0; i < DRIVER_LED_TOTAL; i++) {
+  for (int i = 0; i < RGB_MATRIX_LED_COUNT; i++) {
     HSV hsv = {
       .h = pgm_read_byte(&ledmap[layer][i][0]),
       .s = pgm_read_byte(&ledmap[layer][i][1]),
@@ -266,8 +266,8 @@ void set_layer_color(int layer) {
   }
 }
 
-void rgb_matrix_indicators_user(void) {
-  if (keyboard_config.disable_layer_led) { return; }
+bool rgb_matrix_indicators_user(void) {
+  if (keyboard_config.disable_layer_led) { return false; }
   switch (biton32(layer_state)) {
     case 0:
       set_layer_color(0);
@@ -295,6 +295,7 @@ void rgb_matrix_indicators_user(void) {
       rgb_matrix_set_color_all(0, 0, 0);
     break;
   }
+  return true;
 }
 
 #ifdef AUDIO_ENABLE
@@ -367,7 +368,7 @@ bool music_mask_user(uint16_t keycode) {
 }
 #endif
 
-uint32_t layer_state_set_user(uint32_t state) {
+layer_state_t layer_state_set_user(layer_state_t state) {
     return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
 }
 
