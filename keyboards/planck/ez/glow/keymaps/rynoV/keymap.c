@@ -59,6 +59,7 @@ enum planck_keycodes {
   PHONE,
   HTML_FOLDABLE,
   ALT_S_L,
+  CTRL_TAB,
 };
 
 enum tap_dance_codes {
@@ -89,7 +90,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                ),
 
   [_LOWER] = LAYOUT_planck_grid(
-    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_CIRC,        KC_AMPR,        KC_ASTR,        KC_LPRN,        KC_RPRN,        KC_DELETE,
+    CTRL_TAB, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_CIRC,        KC_AMPR,        KC_ASTR,        KC_LPRN,        KC_RPRN,        KC_DELETE,
     KC_TRANSPARENT, KC_PIPE,        KC_UNDS,        KC_PLUS,        KC_LCBR,        KC_RCBR,        KC_HOME,        KC_PGDN,      KC_PGUP,        KC_END,         KC_TILD,        KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, ALT_S_L, RCS(KC_P), KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_NO,          KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
@@ -134,6 +135,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
+    case CTRL_TAB:
+      if (record->event.pressed) {
+        register_code(KC_LCTL);
+        register_code(KC_TAB);
+      } else {
+        // We unregister ctrl when the layer is released (handled in
+        // layer_state_set_user). This isn't perfect, because ctrl will be
+        // applied to any other keys pressed while the layer is active after
+        // pressing tab, but it's good enough for now.
+        unregister_code(KC_TAB);
+      }
+      break;
     case EMAIL:
       if (record->event.pressed) {
         SEND_STRING("sieppertcalum@gmail.com");
@@ -186,10 +199,13 @@ void keyboard_post_init_user(void) {
   rgb_matrix_enable();
 }
 
-// Note that these colours are in HSV
+// Note that these colours are in HSV, and the values need to be
+// mapped to the range 0 to 255 because they're stored with a single
+// byte. This link has some examples:
+// https://github.com/qmk/qmk_firmware/blob/0379d1f59e58cefa18cdb72ba1b77507d1108ae6/quantum/color.h#L53
 #define NULL_C {0,0,0}
-#define MAIN_C {157,71,64} // Colour for the main characters/symbols
-#define MAIN_BORDER_C {157,72,106} // Colour for the edges of the board, modifiers etc
+#define MAIN_C {HSV_PURPLE} // Colour for the main characters/symbols
+#define MAIN_BORDER_C {HSV_PURPLE} // Colour for the edges of the board, modifiers etc
 #define MOVE_C {66,67,190} // Colour for movement keys, up/down etc
 #define FUNC_C {152,115,172} // Colour for function/system function keys
 #define AUDIO_C {10,117,208} // Colour for keyboard audio controls
@@ -203,7 +219,7 @@ const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
       MAIN_BORDER_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_BORDER_C,
       MAIN_BORDER_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C,
       MAIN_BORDER_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_C, MAIN_BORDER_C,
-      MAIN_BORDER_C, MAIN_BORDER_C, MAIN_BORDER_C, MAIN_BORDER_C, MAIN_BORDER_C, NULL_C, MAIN_BORDER_C, MAIN_BORDER_C, MAIN_BORDER_C, MAIN_BORDER_C, MAIN_BORDER_C
+      MAIN_BORDER_C, MAIN_BORDER_C, MAIN_BORDER_C, MAIN_BORDER_C, MAIN_BORDER_C, MAIN_BORDER_C, MAIN_BORDER_C, MAIN_BORDER_C, MAIN_BORDER_C, MAIN_BORDER_C, MAIN_BORDER_C
     },
 
     [1] = {
@@ -259,15 +275,22 @@ void set_layer_color(int layer) {
     if (!hsv.h && !hsv.s && !hsv.v) {
         rgb_matrix_set_color( i, 0, 0, 0 );
     } else {
+        // Limit the brightness based on the current config (changeable by keybinds)
+        if (hsv.v > rgb_matrix_get_val()) {
+          hsv.v = rgb_matrix_get_val();
+        }
         RGB rgb = hsv_to_rgb( hsv );
-        float f = (float)rgb_matrix_config.hsv.v / UINT8_MAX;
-        rgb_matrix_set_color( i, f * rgb.r, f * rgb.g, f * rgb.b );
+        rgb_matrix_set_color( i, rgb.r, rgb.g, rgb.b );
     }
   }
 }
 
 bool rgb_matrix_indicators_user(void) {
   if (keyboard_config.disable_layer_led) { return false; }
+  if (!rgb_matrix_is_enabled()) {
+    rgb_matrix_set_color_all(0, 0, 0);
+    return true;
+  }
   switch (biton32(layer_state)) {
     case 0:
       set_layer_color(0);
@@ -369,6 +392,12 @@ bool music_mask_user(uint16_t keycode) {
 #endif
 
 layer_state_t layer_state_set_user(layer_state_t state) {
+    // Using & here checks that ctrl is one of the modifiers active. This code
+    // is to support my custom CTRL_TAB key in the lower layer, which acts like
+    // the ctrl key is being held while I'm holding the layer key.
+    if (!layer_state_cmp(state, _LOWER) && (get_mods() & MOD_BIT(KC_LCTL))) {
+      unregister_code(KC_LCTL);
+    }
     return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
 }
 
